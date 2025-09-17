@@ -54,14 +54,41 @@ class DetectionResponse(BaseModel):
 •	Обращаться к localhost:8000  
 
 
-
 # Проделанные шаги
 
 ## Первоначальная разметка набора данных
-Полученнный датасет содержит 30079 изображений, ручная разметка такого набора данных силами одного человека (в адекватные сроки) невозможна, поэтому воспользуемся zero-shot подходом для первоначальной разметки изображений. Поскольку zero-shot моделей для задач object detection много, воспользуемся информацией со страницы https://huggingface.co/models?pipeline_tag=zero-shot-object-detection и возьмем самые популярные архитектуры. В первую очередь обращаем внимание на модели, обновлявшиеся в 2024-2025 году, тут на выбор есть 2 основные архитектуры — OWLiT(OWLv2), Grounding DINO.
+Полученнный датасет содержит 30079 изображений, ручная разметка такого набора данных силами одного человека (в адекватные сроки) невозможна, поэтому воспользуемся zero-shot подходом для первоначальной разметки изображений. После того, как
+получится добиться приемлемого качества на валидационном наборе - прогоним *zero-shot* модель на 2000 изображений из выданного набора. Далее будем вручную корректировать разметку, удаляя ложные срабатывания и добавляя неразмеченные объекты. Исходя из этого целевой метрикой данного этапа будет являться recall, ведь удалять лишние срабатывания куда проще, чем добавлять новые.
+
+Поскольку zero-shot моделей для задач object detection много, воспользуемся информацией со страницы https://huggingface.co/models?pipeline_tag=zero-shot-object-detection и возьмем самые популярные архитектуры. В первую очередь обращаем внимание на модели, обновлявшиеся в 2024-2025 году, тут на выбор есть 2 основные архитектуры — OWLiT(OWLv2), Grounding DINO.
 
 Каким образом будет происходить оценка работ всех этих моделей? На портале Roboflow уже находится некоторое количество размеченных изображений (https://universe.roboflow.com/jull-7hwfj/1200-8o5s6), выполнив ручную проверку данного набора убеждаемся, что разметка была проведена верно. Составленный набор содержит большое количество логотипов Т-банка разных цветов, размеров, снятых с разных углов. В нем имеется достаточное количество изображений логотипа банка "Тинькофф", которые следует избегать по условию кейса. Также в набор собственноручно было добавлено некоторое количество изображений, никак не относящихся к "Т-банку", что будет являться хорошей проверкой на False Positive срабатывания.
 
-Имея опыт работы с задачей детекции используя фреймворк Ultralytics и модели YOLO — я проверил как показывает себя модель YOLOv8x-worldv2, однако она показала результаты Precision и Recall ниже 0.1. Поскольку YOLO-world это open-vocabulary детектор, он плохо справляется с обнаружением изображений по длинным фразам, оставим его до лучших времен. Будем проводить эксперименты с OWLv2 и Grounding DINO.
+Имея опыт работы с задачей детекции используя фреймворк Ultralytics и модели YOLO — я проверил как показывает себя модель YOLOv8x-worldv2, однако она показала результаты Precision и Recall ниже 0.1. Поскольку YOLO-world это open-vocabulary детектор, он плохо справляется с обнаружением изображений по длинным фразам, оставим его до лучших времен.
 
+
+#### Чтобы быстро получить стартовые боксы, обучил **две zero-shot модели**:
+- **OWLv2 (google/owlv2-large-patch14-ensemble)** — выше точность, низкая полнота.
+- **Grounding DINO (IDEA-Research/grounding-dino-base)** — высокий полнота, низкая точность.  
+
+Далее были попытки найти подходящие промты, дабы повысить качество **zero-shot** детекции. Итоговые варианты:
+```
+PROMPTS_OWL = [
+    "a stylized geometric letter t inside a shield emblem",
+    "a minimalist t logo inside a angular shield shape",
+    "a modern t letter inside a geometric shield outline",
+    "a T-Bank logo with letter t in shield",
+    "t letter in white shield"
+]
+PROMPTS_GDINO = (
+    "logo with a bold black letter T inside a white shield-like shape",
+    "white or yellowshield emblem with a large black T in the center",
+    "white badge shaped like a shield with a black capital T",
+    "minimalist logo with a bold T inside a shield icon",
+    "flat design emblem shaped like a shield containing a yellow or black or white T letter",
+    "logo featuring a strong black T on a yellow or white shield background",
+    "simplified yellow or black or white shield logo with a single bold yellow or black or white letter T"
+)
+```
+Как видно, модель GDINO любиь длинные описания, после четкого указания доступных цветов recall у GDINO вырос на 0.3
 
