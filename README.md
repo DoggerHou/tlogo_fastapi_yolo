@@ -32,6 +32,20 @@ class Detection(BaseModel):
 
 class DetectionResponse(BaseModel):
     detections: List[Detection]
+
+@app.post("/detect", response_model=DetectionResponse)
+async def detect_logo(file: UploadFile = File(...)):
+    """
+    Детекция логотипа Т-банка на изображении
+
+    Args:
+        file: Загружаемое изображение (JPEG, PNG, BMP, WEBP)
+
+    Returns:
+        DetectionResponse: Результаты детекции с координатами найденных логотипов
+    """
+    pass
+
 ```
 ## Пример ответа
 ```
