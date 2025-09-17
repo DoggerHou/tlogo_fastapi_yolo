@@ -1,0 +1,18 @@
+# server/docker-compose.yml
+services:
+  tlogo:
+    build: .
+    image: tlogo-detector:cpu
+    container_name: tlogo
+    environment:
+      MODEL_PATH: models/best.pt
+      DEVICE: cpu
+      CONF: "0.25"
+      IMGSZ: "832"
+      MAX_DETS: "300"
+    # смонтируем веса с хоста, чтобы не пересобираать образ при замене best.pt
+    volumes:
+      - ./models:/app/models:ro
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
