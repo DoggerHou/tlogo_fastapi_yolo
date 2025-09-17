@@ -6,11 +6,14 @@
 API реализовано на **FastAPI**, детекция — с помощью модели **YOLO12s**, обученной на собственном датасете (YOLO format).
 
 ## Структура проекта
+tlogo_fastapi_yolo/  
 ├── app/  
-│ └── main.py # FastAPI-приложение (эндпоинты /detect, /health)  
+│ └── main.py                              # Точка входа, запуск FastAPI-приложения  
 ├── models/  
-│ └── best.pt # веса обученной модели YOLO (помести сюда)  
-├── requirements.txt # Python-зависимости  
-├── Dockerfile # Docker-образ для запуска сервиса  
-├── docker-compose.yml # (опционально) удобный запуск сервиса  
-└── README.md # документация  
+│ └── best.pt                              # Обученная модель YOLOv12  
+├── validation_data/                       # Папка с валидационными данными  
+├── docker-compose.yml                     # Конфигурация для запуска API в Docker Compose  
+├── Dockerfile                             # Сборка Docker-образа API  
+├── requirements.txt                       # Зависимости Python  
+├── tlogo_preparation_for_annotation.ipynb # Ноутбук для подготовки/разметки данных  
+├── tlogo_training.ipynb                   # Ноутбук обучения модели  
