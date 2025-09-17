@@ -41,6 +41,7 @@ try:
         raise FileNotFoundError(f"Model weights not found: {MODEL_PATH}")
     model = YOLO(MODEL_PATH)
     # пробный прогон — и заодно проверим доступность указанного DEVICE
+    #
     try:
         _ = model.predict(source=Image.new("RGB", (32, 32)), device=DEVICE, verbose=False)
     except Exception:
