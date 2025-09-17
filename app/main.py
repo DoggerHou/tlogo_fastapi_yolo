@@ -1,4 +1,3 @@
-# FastAPI-инференс для YOLO (CPU/GPU). Без скачиваний — только локальный MODEL_PATH.
 import io
 import os
 from typing import List, Optional
@@ -62,7 +61,14 @@ def _to_int_xyxy(box, W, H):
 
 @app.post("/detect", response_model=DetectionResponse, responses={503: {"model": ErrorResponse}})
 async def detect_logo(file: UploadFile = File(...)):
-    """Детекция логотипа: вернём JSON с боксами (xyxy)."""
+    """Детекция логотипа: вернём JSON с боксами (xyxy).
+
+        Args:
+            file: Загружаемое изображение (JPEG, PNG, BMP, WEBP)
+
+        Returns:
+            DetectionResponse: Результаты детекции с координатами найденных логотипов
+        """
     if model is None:
         return JSONResponse(
             status_code=503,
