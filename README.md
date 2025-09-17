@@ -1,12 +1,11 @@
-Структура проекта
-tlogo_fastapi_yolo/
-├── app/                          # папка с кодом FastAPI сервиса
-|    └───main.py                  # Точка входа, запуск FastAPI-приложения
-├── models/                       
-|     └── best.pt                 # Обученная модель YOLOv11
-├── validation_data/              # папка с валидационными данными
-├── docker-compose.yml            # docker-compose для запуска API
-├── Dockerfile                    # сборка образа API
-├── requirements.txt              # зависимости Python
-├── tlogo_preparation_for_annotation.ipynb   # ноутбук подготовки/разметки
-├── tlogo_training.ipynb          # ноутбук обучения модели
+## Структура проекта
+├── app/
+│ └── main.py # Точка входа, запуск FastAPI-приложения
+├── models/
+│ └── best.pt # Обученная модель YOLOv11
+├── validation_data/ # Папка с валидационными данными
+├── docker-compose.yml # Конфигурация для запуска API в Docker Compose
+├── Dockerfile # Сборка Docker-образа API
+├── requirements.txt # Зависимости Python
+├── tlogo_preparation_for_annotation.ipynb # Ноутбук для подготовки/разметки данных
+├── tlogo_training.ipynb # Ноутбук обучения модели
