@@ -32,7 +32,7 @@ class Detection(BaseModel):
 
 class DetectionResponse(BaseModel):
     detections: List[Detection]
-## Пример ответа
+# Пример ответа
 {
   "detections": [
     {
@@ -40,3 +40,12 @@ class DetectionResponse(BaseModel):
     }
   ]
 }
+
+# Запуск
+•	Создать пустую папку на ПК
+•	Убедиться, что установлен Docker / установить
+•   Склонировать репозиторий:
+    git clone https://github.com/<your_name>/Fastapi_YOLO.git
+    cd Fastapi_YOLO
+•   Собрать и запустить контейнер:
+    docker compose up --build -d
